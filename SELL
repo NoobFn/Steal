@@ -1,0 +1,10 @@
+-- RoHub Auto Sell Module
+local PacketEvent = game:GetService("ReplicatedStorage"):WaitForChild("SharedModules"):WaitForChild("Packet"):WaitForChild("RemoteEvent")
+
+task.spawn(function()
+    while true do
+        PacketEvent:FireServer(buffer.fromstring("\xAB\x00\x1F"))
+        task.wait(0.66)
+    end
+end)
+
