@@ -1,3 +1,11 @@
+-- [TOGGLE GUARD]
+local ExistingGui = game:GetService("CoreGui"):FindFirstChild("Fluent") or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Fluent")
+if ExistingGui then
+    ExistingGui.Enabled = not ExistingGui.Enabled
+    return
+end
+
+-- [LIBRARY LOAD]
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
@@ -74,4 +82,3 @@ Tabs.Info:AddButton({
 })
 
 Fluent:Notify({ Title = "RoHub", Content = "Cleaned and Organized!", Duration = 3 })
-
