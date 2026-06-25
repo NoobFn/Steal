@@ -1,0 +1,19 @@
+-- [SHOP TAB SETUP]
+local SelectedSeeds = {}
+Tabs.Shop:AddDropdown("SeedSelector", {
+    Title = "Select Seeds to Buy",
+    Values = SeedList,
+    Multi = true,
+    Default = {},
+    Callback = function(Value) SelectedSeeds = Value end
+})
+
+-- Now the Buy toggle just manages the external loadstring
+Tabs.Shop:AddToggle("BuySeedsToggle", {
+    Title = "Buy Seeds",
+    Description = "Automatically buys selected seeds",
+    Default = false,
+    Callback = function(v) 
+        manageLoadstring("Buy", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/BUY_SEEDS", v) 
+    end
+})
