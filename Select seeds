@@ -1,19 +1,29 @@
--- [SHOP TAB SETUP]
-local SelectedSeeds = {}
+-- [GLOBAL SETTINGS]
+local SelectedSeeds = {} -- Define this at the top
+
+-- [SHOP TAB]
+local SeedList = {
+    "Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Apple", "Bamboo", "Corn", "Cactus", 
+    "Pineapple", "Green Bean", "Banana", "Coconut", "Mango", "Grapes", "Acorn", "Horned Melon", 
+    "Baby Cactus", "Cherry", "Glow Mushroom", "Poison Ivy", "Sunflower", "Mushroom", "Moon Bloom", "Dragon's Breath"
+}
+
 Tabs.Shop:AddDropdown("SeedSelector", {
     Title = "Select Seeds to Buy",
     Values = SeedList,
     Multi = true,
     Default = {},
-    Callback = function(Value) SelectedSeeds = Value end
+    Callback = function(Value) 
+        SelectedSeeds = Value -- This updates the table that the Buy script reads
+    end
 })
 
--- Now the Buy toggle just manages the external loadstring
 Tabs.Shop:AddToggle("BuySeedsToggle", {
     Title = "Buy Seeds",
     Description = "Automatically buys selected seeds",
     Default = false,
     Callback = function(v) 
-        manageLoadstring("Buy", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/BUY_SEEDS", v) 
+        -- Uses the same reliable thread manager as your other toggles
+        manageLoadstring("Buy", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/Buy%20seed", v) 
     end
 })
