@@ -1,0 +1,77 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "RoHub | Grow a Garden 2",
+    SubTitle = "",
+    TabWidth = 80,
+    Size = UDim2.fromOffset(380, 320),
+    Acrylic = true,
+    Theme = "Aqua",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+-- [TABS]
+local Tabs = {
+    Farm = Window:AddTab({ Title = "Farm", Icon = "rbxassetid://10723344686" }),
+    Shop = Window:AddTab({ Title = "Shop", Icon = "rbxassetid://10734950370" }),
+    Info = Window:AddTab({ Title = "Info", Icon = "rbxassetid://10841381374" })
+}
+
+-- [THREAD MANAGEMENT]
+local threads = {}
+local function manageLoadstring(name, url, enabled)
+    if enabled then
+        threads[name] = task.spawn(function() loadstring(game:HttpGet(url))() end)
+    else
+        if threads[name] then task.cancel(threads[name]); threads[name] = nil end
+    end
+end
+
+-- [FARM TAB]
+Tabs.Farm:AddSection("Automation")
+Tabs.Farm:AddToggle("HarvestToggle", { Title = "Auto Harvest", Callback = function(v) manageLoadstring("Harvest", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/HARVEST", v) end })
+Tabs.Farm:AddToggle("SellToggle", { Title = "Auto Sell", Callback = function(v) manageLoadstring("Sell", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/SELL", v) end })
+
+Tabs.Farm:AddSection("Steal")
+Tabs.Farm:AddToggle("StealToggle", { Title = "Auto Steal", Callback = function(v) manageLoadstring("Steal", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/Steal", v) end })
+Tabs.Farm:AddToggle("AntiStealToggle", { Title = "Anti Steal", Callback = function(v) manageLoadstring("AntiSteal", "https://raw.githubusercontent.com/NoobFn/Steal/refs/heads/main/Anti%20Steal", v) end })
+
+-- [SHOP TAB]
+local PacketEvent = game:GetService("ReplicatedStorage"):WaitForChild("SharedModules"):WaitForChild("Packet"):WaitForChild("RemoteEvent")
+local Lists = {
+    Seed = {"Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Apple", "Bamboo", "Corn", "Cactus", "Pineapple", "Green Bean", "Banana", "Coconut", "Mango", "Grapes", "Acorn", "Horned Melon", "Baby Cactus", "Cherry", "Glow Mushroom", "Poison Ivy", "Sunflower", "Mushroom", "Moon Bloom", "Dragon's Breath"},
+    Gear = {"Common Watering Can", "Super Watering Can", "Trowel", "Wheelbarrow", "Common Sprinkler", "Uncommon Sprinkler", "Rare Sprinkler", "Super Sprinkler", "Legendary Sprinkler", "Speed Mushroom", "Jump Mushroom", "Shrink Mushroom", "Invisibility Mushroom", "Flashbang", "Lantern", "Gnome", "Teleporter", "Basic Pot"},
+    Crate = {"Ladder Crate", "Bench Crate", "Light Crate", "Sign Crate", "Arch Crate", "Roleplay Crate", "Bridge Crate", "Conveyor Crate", "Spring Crate", "Seesaw Crate", "Owner Door Crate", "Bear Trap Crate", "Fence Crate", "Teleporter Pad Crate"}
+}
+
+for name, list in pairs(Lists) do
+    Tabs.Shop:AddSection(name)
+    local Selected = {}
+    local prefix = (name == "Seed" and "y") or (name == "Gear" and "}") or "{"
+    Tabs.Shop:AddDropdown(name.."Selector", {Title = "Select "..name, Values = list, Multi = true, Default = {}, Callback = function(v) Selected = v end})
+    Tabs.Shop:AddToggle("Buy"..name.."Toggle", {Title = "Auto Buy "..name, Callback = function(v)
+        if v then threads["Buy"..name] = task.spawn(function() while v do for n, s in pairs(Selected) do if s then PacketEvent:FireServer(buffer.fromstring(prefix.."\x00"..string.char(#n)..n)) task.wait(0.1) end end task.wait(0.5) end end)
+        else if threads["Buy"..name] then task.cancel(threads["Buy"..name]) end end
+    end})
+end
+
+-- [INFO TAB]
+Tabs.Info:AddSection("Community")
+Tabs.Info:AddParagraph({
+    Title = "RoHub Discord",
+    Content = "Join our community server for updates and support!\nLink: https://discord.gg/UVmrjRjtTW"
+})
+
+Tabs.Info:AddButton({
+    Title = "Copy Invite Link",
+    Description = "Copies the Discord link to your clipboard",
+    Callback = function()
+        if setclipboard then
+            setclipboard("https://discord.gg/UVmrjRjtTW")
+            Fluent:Notify({ Title = "RoHub", Content = "Link copied to clipboard!", Duration = 3 })
+        end
+    end
+})
+
+Fluent:Notify({ Title = "RoHub", Content = "Cleaned and Organized!", Duration = 3 })
+
