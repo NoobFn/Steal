@@ -1,7 +1,26 @@
 -- RoHub Auto Sell Module
-local PacketEvent = game:GetService("ReplicatedStorage"):WaitForChild("SharedModules"):WaitForChild("Packet"):WaitForChild("RemoteEvent")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-while true do
-    PacketEvent:FireServer(buffer.fromstring("\xAB\x00\x1F"))
-    task.wait(0.66)
+-- We use a more reliable way to locate the event
+local function getPacketEvent()
+    local sharedModules = ReplicatedStorage:FindFirstChild("SharedModules")
+    if sharedModules then
+        local packet = sharedModules:FindFirstChild("Packet")
+        if packet then
+            return packet:FindFirstChild("RemoteEvent")
+        end
+    end
+    return nil
+end
+
+local PacketEvent = getPacketEvent()
+
+if PacketEvent then
+    -- Loop to continuously fire the sell packet
+    while true do
+        PacketEvent:FireServer(buffer.fromstring("\xAB\x00\x1F"))
+        task.wait(0.66)
+    end
+else
+    warn("RoHub Auto Sell: PacketEvent not found!")
 end
