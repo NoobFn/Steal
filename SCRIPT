@@ -1,5 +1,15 @@
+-- [TOGGLE CHECK]
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
+-- This checks both common locations where UI is stored
+local ExistingGui = game:GetService("CoreGui"):FindFirstChild("Fluent") or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Fluent")
+
+if ExistingGui then
+    ExistingGui.Enabled = not ExistingGui.Enabled
+    return -- This stops the script from running the rest of the code if it's just toggling
+end
+
+-- [YOUR ORIGINAL SCRIPT]
 local Window = Fluent:CreateWindow({
     Title = "RoHub | Grow a Garden 2",
     SubTitle = "",
@@ -74,4 +84,3 @@ Tabs.Info:AddButton({
 })
 
 Fluent:Notify({ Title = "RoHub", Content = "Cleaned and Organized!", Duration = 3 })
-
