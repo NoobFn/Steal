@@ -1,13 +1,7 @@
--- RoHub Auto Sell Module (Fixed for Toggle)
+-- RoHub Auto Sell Module
 local PacketEvent = game:GetService("ReplicatedStorage"):WaitForChild("SharedModules"):WaitForChild("Packet"):WaitForChild("RemoteEvent")
 
--- Ensure the kill switch is off when the script starts
-getgenv().StopSell = false
-
-task.spawn(function()
-    -- The loop now checks for the StopSell variable
-    while not getgenv().StopSell do
-        PacketEvent:FireServer(buffer.fromstring("\xAB\x00\x1F"))
-        task.wait(0.66)
-    end
-end)
+while true do
+    PacketEvent:FireServer(buffer.fromstring("\xAB\x00\x1F"))
+    task.wait(0.66)
+end
