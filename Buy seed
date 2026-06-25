@@ -1,20 +1,13 @@
 -- RoHub Buy Seeds Module
 local PacketEvent = game:GetService("ReplicatedStorage"):WaitForChild("SharedModules"):WaitForChild("Packet"):WaitForChild("RemoteEvent")
 
--- The list of seeds
-local SeedList = {
-    "Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Apple", "Bamboo", "Corn", "Cactus", 
-    "Pineapple", "Green Bean", "Banana", "Coconut", "Mango", "Grapes", "Acorn", "Horned Melon", 
-    "Baby Cactus", "Cherry", "Glow Mushroom", "Poison Ivy", "Sunflower", "Mushroom", "Moon Bloom", "Dragon's Breath"
-}
-
--- Logic: Run the loop directly
--- This will be managed by your main script's 'manageLoadstring' function
+-- The loop runs and looks for the 'SelectedSeeds' table defined in your main script
 while true do
-    for _, seedName in pairs(SelectedSeeds) do
-        PacketEvent:FireServer(buffer.fromstring("y\x00" .. string.char(#seedName) .. seedName))
-        task.wait(0.1)
+    if SelectedSeeds then
+        for _, seedName in pairs(SelectedSeeds) do
+            PacketEvent:FireServer(buffer.fromstring("y\x00" .. string.char(#seedName) .. seedName))
+            task.wait(0.1)
+        end
     end
     task.wait(0.5)
 end
-
