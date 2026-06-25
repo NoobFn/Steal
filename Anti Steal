@@ -1,0 +1,56 @@
+local function findShovel()
+	local function scan(c) if c then for _, t in ipairs(c:GetChildren()) do
+		if t:IsA("Tool") and t:GetAttribute("Shovel") ~= nil then return t end
+	end end end
+	return scan(LP.Character) or scan(LP:FindFirstChildOfClass("Backpack"))
+end
+local function findIntruders()
+	local pid = LP:GetAttribute("PlotId")
+	local out = {}
+	if not pid then return out end
+	local gzd = ReplicatedStorage:FindFirstChild("GardenZoneData")
+	if not gzd then return out end
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= LP then
+			local v = gzd:FindFirstChild(p.Name)
+			local ch = p.Character
+			if v and v.Value == pid and ch and ch:FindFirstChild("HumanoidRootPart") then
+				out[#out + 1] = p
+			end
+		end
+	end
+	return out
+end
+task.spawn(function()
+	while ALIVE do
+		if F.antiSteal and isNight() then
+			local intruders = findIntruders()
+			local shovel = findShovel()
+			local hrp = getHRP()
+			if #intruders > 0 and shovel and hrp then
+				acquire()
+				local saved = hrp.CFrame
+				local hum = LP.Character and LP.Character:FindFirstChildOfClass("Humanoid")
+				if hum then pcall(function() hum:EquipTool(shovel) end) end
+				for _, p in ipairs(intruders) do
+					if not (F.antiSteal and isNight()) then break end
+					local ch = p.Character
+					local tHRP = ch and ch:FindFirstChild("HumanoidRootPart")
+					if tHRP then
+						local tp = tHRP.Position
+						local h2 = getHRP()
+						if h2 then h2.CFrame = CFrame.new(tp + Vector3.new(0, 0, 5), tp) end
+						pcall(function() Net.Shovel.SwingShovel:Fire() end)
+						pcall(function() Net.Shovel.HitPlayer:Fire(p.UserId) end)
+						task.wait(0.66)
+					end
+				end
+				local hb = getHRP()
+				if hb then hb.CFrame = saved end
+				release()
+			end
+		end
+		task.wait(F.antiSteal and 0.2 or 1)
+	end
+end)
+
