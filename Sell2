@@ -1,4 +1,3 @@
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Robust event location
@@ -7,12 +6,12 @@ local Event = ReplicatedStorage:FindFirstChild("SharedModules", true) and
               ReplicatedStorage:FindFirstChild("SharedModules", true):FindFirstChild("Packet", true):FindFirstChild("RemoteEvent")
 
 if Event then
-    -- The thread will be killed by task.cancel in your main GUI script
-    while true do
+    -- It will now only run while _G.AutoSell is true
+    -- As soon as you toggle it off in your GUI, _G.AutoSell becomes false and the loop stops
+    while _G.AutoSell do
         Event:FireServer(buffer.fromstring("\xAE\x00\x13"))
         task.wait(0.66)
     end
 else
     warn("RoHub Error: Could not find RemoteEvent for Auto Sell")
 end
-
